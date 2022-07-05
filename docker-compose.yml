@@ -1,0 +1,11 @@
+version: '3'
+services:
+  pnr2-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: yarn start-dev
