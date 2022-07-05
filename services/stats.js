@@ -32,7 +32,7 @@ function convertDefaultStat(rank, rate, old_stats = {}) {
 
 function rank_unit(rank, old_rank) {
   if (rank === old_rank) return '▷suspend'
-  return rank < old_rank ? '▲up' : '▼down' 
+  return rank < old_rank ? '▲up' : '▼down'
 }
 
 function rate_unit(rate, old_rate) {

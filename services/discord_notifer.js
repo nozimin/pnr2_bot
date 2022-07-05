@@ -9,7 +9,7 @@ module.exports = {
       var embed = new Discord.MessageEmbed()
                         .setColor(message.author.accentColor || '#2c2f33')
                         .setDescription(content)
-                        .setAuthor({ 
+                        .setAuthor({
                           name: `${message.author.username}#${message.author.discriminator}`,
                           iconURL: message.author.displayAvatarURL()
                         })
