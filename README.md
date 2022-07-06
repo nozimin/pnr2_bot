@@ -8,6 +8,6 @@ $ docker-compose up
 
 ## add package
 ```sh
-$ docker-compose run --rm among-us-jp-bot yarn add <package>
+$ docker-compose run --rm pnr2-bot yarn add <package>
 $ docker-compose build
 ```
