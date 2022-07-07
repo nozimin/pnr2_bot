@@ -5,6 +5,7 @@ module.exports = {
   sendLog(message) {
     message.author.displayAvatarURL()
     const contents = message.content.match(/(.|[\r\n]){1,1980}/g)
+    if (!contents) return
     contents.forEach(content => {
       var embed = new Discord.MessageEmbed()
                         .setColor(message.author.accentColor || '#2c2f33')
