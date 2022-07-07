@@ -6,15 +6,12 @@ const client = new Client({
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   ],
 })
-const axios = require('axios')
 const fs = require('fs')
-
 const discord_notifer = require('./services/discord_notifer.js')
 
 client.on('messageCreate', async message => {
   if(message.author.bot) return
 
-  console.log(message.attachments)
   discord_notifer.sendLog(message)
 })
 

@@ -1,10 +1,11 @@
 const Discord = require('discord.js')
-const Webhook = new Discord.WebhookClient({url: process.env.discord_webhook_url})
+const Webhook = new Discord.WebhookClient({url: process.env.DISCORD_WEBHOOK_URL})
 
 module.exports = {
   sendLog(message) {
     message.author.displayAvatarURL()
     const contents = message.content.match(/(.|[\r\n]){1,1980}/g)
+    if (!contents) return
     contents.forEach(content => {
       var embed = new Discord.MessageEmbed()
                         .setColor(message.author.accentColor || '#2c2f33')
