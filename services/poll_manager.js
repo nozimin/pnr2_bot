@@ -27,15 +27,16 @@ MYRIAD_JP_GAME = [
 ]
 
 module.exports = {
-  sendPoll() { // 毎週火木土日 PM12:00 に実行
+  async sendPoll() { // 毎週火木土日 PM12:00 に実行
     client.login(process.env.DISCORD_BOT_TOKEN).then(() => {
-      guild   = client.guilds.cache.get('687570470836764682')
-      channel = guild.channels.fetch('983364196974600212').then(channel => channel.send(pollMessage()))
+      client.guilds.fetch(setting.env.poll.guild_id).then(guild => {
+        guild.channels.fetch(setting.env.poll.channel_id).then(channel => channel.send(pollMessage()))
+      })
     })
   },
   async updatePoll(interaction) { // メッセージボタンで発火
     game_mode = setting.pnr2.game_mode_list.filter(g => g.custom_id === interaction.customId)[0]
-    // TODO: Embedを更新。ボタンをおしたユーザーを追加
+    // Embedを更新。ボタンをおしたユーザーを追加
     embed = updateEmbed(interaction.message.embeds[0], interaction.member, game_mode)
 
     interaction.update({ embeds: [embed] })
@@ -44,7 +45,7 @@ module.exports = {
 
 function pollMessage() {
   return {
-    content: 'レース参加確認',
+    content: `${role_mention(setting.env.poll.mention_role_id)}\nレース希望確認`,
     embeds: [createEmbed(setting.pnr2.game_mode_list)],
     components: createButtonComponents(setting.pnr2.game_mode_list)
   }
@@ -115,4 +116,8 @@ function updateEmbed(embed, member, target_game_mode) {
 
 function user_mention(user_id) {
   return `<@${user_id}>`
+}
+
+function role_mention(role_id) {
+  return `<@&${role_id}>`
 }

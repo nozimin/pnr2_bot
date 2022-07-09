@@ -1,3 +1,5 @@
+const env_config = require(`./${process.env.ENV}`)
+
 module.exports = {
   pnr2: {
     game_mode_list: [
@@ -10,5 +12,6 @@ module.exports = {
       { custom_id: 'game_mode_ppr', name: 'PPR', disabled: false },
       { custom_id: 'game_mode_sd', name: 'SD', disabled: false },
     ]
-  }
+  },
+  env: env_config
 }
