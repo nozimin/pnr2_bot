@@ -1,3 +1,4 @@
+const fs = require('fs')
 const { Client, Intents } = require('discord.js')
 const client = new Client({
   intents: [
@@ -6,8 +7,9 @@ const client = new Client({
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   ],
 })
-const fs = require('fs')
+
 const discord_notifer = require('./services/discord_notifer.js')
+const { cronTask } = require('./services/cron_task.js')
 
 client.on('messageCreate', async message => {
   if(message.author.bot) return
@@ -32,6 +34,9 @@ client.once('ready', async () => {
   const DEV_SERVER_ID = '963806755538739290'
   await client.application.commands.set(data)
   console.log(`${client.user.tag} I'm in`)
+
+  // 定期実行
+  cronTask()
 })
 
 client.on('interactionCreate', async interaction => {
