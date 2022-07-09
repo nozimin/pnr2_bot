@@ -11,21 +11,6 @@ const client = new Client({
 
 const setting = require('../config/settings')
 
-MYRIAD_RACE = {
-  'TUE': '18:00 TUE',
-  'THU': '20:00 THU',
-  'SAT': '20:30 SAT',
-  'SUN': '21:30 SUN'
-}
-
-MYRIAD_JP_GAME = [
-  '20:00 MON',
-  '21:00 WED',
-  '22:00 FRI',
-  '20:00 SAT',
-  '21:00 SUN'
-]
-
 module.exports = {
   async sendPoll() { // 毎週火木土日 PM12:00 に実行
     client.login(process.env.DISCORD_BOT_TOKEN).then(() => {
