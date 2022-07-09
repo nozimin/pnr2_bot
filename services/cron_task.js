@@ -1,17 +1,14 @@
 const cron = require('node-cron')
+const { sendPoll } = require('./poll_manager')
 
-const PER_MINUTES = '0 * * * * *' // 毎分
-const PER_NOON = '0 12 * * * *' // 毎分
-const PER_TMP = '25 14 * * * *' // 毎分
+const PER_NOON = '0 0 3 * * SUN,TUE,THU,SAT' // 12:00 UTC+09:00
+const PER_THREE_PM = '0 0 6 * * SUN,TUE,THU,SAT' // 15:00 UTC+09:00
+const PER_TMP = '*/10  * * * * SUN,TUE,THU,SAT'
 
 module.exports = {
   cronTask() {
-    console.log('hey')
-    cron.schedule(PER_MINUTES, () => console.log('毎分実行'))
-    cron.schedule(PER_NOON, () => sendPollMessage())
+    cron.schedule(PER_NOON, () => sendPoll())
+    // cron.schedule(PER_THREE_PM, () => console.log(new Date()))
+    // cron.schedule(PER_TMP, () => console.log(new Date()))
   }
-}
-
-function sendPollMessage() {
-  console.log('PM 12:00に実行')
 }

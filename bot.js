@@ -8,8 +8,10 @@ const client = new Client({
   ],
 })
 
-const discord_notifer = require('./services/discord_notifer.js')
-const { cronTask } = require('./services/cron_task.js')
+const setting = require('./config/settings')
+const discord_notifer = require('./services/discord_notifer')
+const { cronTask } = require('./services/cron_task')
+const { updatePoll } = require('./services/poll_manager')
 
 client.on('messageCreate', async message => {
   if(message.author.bot) return
@@ -40,16 +42,26 @@ client.once('ready', async () => {
 })
 
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return
-  const command = commands[interaction.commandName]
-  try {
-    await command.execute(interaction)
-  } catch (error) {
-    console.error(error)
-    await interaction.reply({
-      content: 'There was an error while executing this command!',
-      ephemeral: true,
-    })
+  // slash command
+  if (interaction.isCommand()) {
+    const command = commands[interaction.commandName]
+    try {
+      await command.execute(interaction)
+    } catch (error) {
+      console.error(error)
+      await interaction.reply({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      })
+    }
+  }
+
+  // button
+  if (interaction.isButton()) {
+    const game_mode_custom_ids = setting.pnr2.game_mode_list.map(game_mode => game_mode.custom_id)
+    if (game_mode_custom_ids.includes(interaction.customId)) {
+      await updatePoll(interaction)
+    }
   }
 })
 
