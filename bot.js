@@ -9,6 +9,7 @@ const client = new Client({
 })
 
 const setting = require('./config/settings')
+const button_data = [...setting.myriad_race.buttons, setting.myriad_race.reset]
 const discord_notifer = require('./services/discord_notifer')
 const { cronTask } = require('./services/cron_task')
 const { updatePoll } = require('./services/poll_manager')
@@ -58,8 +59,7 @@ client.on('interactionCreate', async interaction => {
 
   // button
   if (interaction.isButton()) {
-    const game_mode_custom_ids = setting.pnr2.game_mode_list.map(game_mode => game_mode.custom_id)
-    if (game_mode_custom_ids.includes(interaction.customId)) {
+    if (button_data.map(game_mode => game_mode.custom_id).includes(interaction.customId)) {
       await updatePoll(interaction)
     }
   }

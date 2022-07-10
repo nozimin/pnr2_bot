@@ -10,6 +10,7 @@ const client = new Client({
 })
 
 const setting = require('../config/settings')
+const button_data = [...setting.myriad_race.buttons, setting.myriad_race.reset]
 
 module.exports = {
   async sendPoll() { // 毎週火木土日 PM12:00 に実行
@@ -20,7 +21,7 @@ module.exports = {
     })
   },
   async updatePoll(interaction) { // メッセージボタンで発火
-    game_mode = setting.pnr2.game_mode_list.filter(g => g.custom_id === interaction.customId)[0]
+    let game_mode = button_data.filter(g => g.custom_id === interaction.customId)[0]
     // Embedを更新。ボタンをおしたユーザーを追加
     embed = updateEmbed(interaction.message.embeds[0], interaction.member, game_mode)
 
@@ -31,17 +32,17 @@ module.exports = {
 function pollMessage() {
   return {
     content: `${role_mention(setting.env.poll.mention_role_id)}\nレース希望確認`,
-    embeds: [createEmbed(setting.pnr2.game_mode_list)],
-    components: createButtonComponents(setting.pnr2.game_mode_list)
+    embeds: [createEmbed()],
+    components: createButtonComponents(button_data)
   }
 }
 
 // ゲームモードボタンを作成
-function createButtonComponents(games = []) {
-  let game_buttons = games.map(game => {
+function createButtonComponents(button_data = []) {
+  let game_buttons = button_data.map(game => {
     return new MessageButton().setCustomId(game.custom_id)
       .setLabel(game.name)
-      .setStyle('PRIMARY')
+      .setStyle(game.style)
       .setDisabled(game.disabled)
   })
 
@@ -55,8 +56,7 @@ function createButtonComponents(games = []) {
 }
 
 // Embedを作成
-function createEmbed(game_mode_list = []) {
-  game_mode_fields = game_mode_list.map(game_mode => { return { name: game_mode.name, value: '' } })
+function createEmbed() {
   return new MessageEmbed()
     .setColor('#0099ff')
     .setTitle('参加状況')
@@ -64,38 +64,43 @@ function createEmbed(game_mode_list = []) {
 }
 
 function updateEmbed(embed, member, target_game_mode) {
-  let joinned_game = embed.fields.filter(f => f.value.includes(user_mention(member.id)))
-
-  // 参加中のゲームから対象メンバーを抜く
-  if (joinned_game !== []) {
+  // RESET選択時 参加中のゲームから対象メンバーを抜く
+  if (target_game_mode.name === setting.myriad_race.reset.name) {
     embed.fields = embed.fields.map(f => {
       if (f.value.includes(member.id)) {
-        mentions = f.value.split('\n')
-        f.value = mentions.filter(m => m !== user_mention(member.id)).join('\n')
+        f.value = f.value.split('\n').filter(m => m !== user_mention(member.id)).join('\n')
       }
       if (f.value === '') return null
       return f
     }).filter(v => v)
+    return new MessageEmbed(embed)
   }
 
-  // 抜いたゲームと対象ゲームが一致してるなら終了
-  if (joinned_game.filter(g => g.name === target_game_mode.name).length !== 0) return new MessageEmbed(embed)
-
-  // 対象ゲームがまだないなら作成
-  if (!embed.fields.map(f => f.name).includes(target_game_mode.name)) {
-    embed.fields.push({ name: target_game_mode.name, value: '' })
-  }
-
-  // 対象ゲームにメンバーを参加
-  embed.fields = embed.fields.map(f => {
-    if (f.name === target_game_mode.name) {
-      mentions = f.value.split('\n')
-      mentions.push(user_mention(member.id))
-      f.value = mentions.join('\n')
+  let joinned_game = embed.fields.filter(f => f.value.includes(user_mention(member.id)))
+  // 選択したゲームにすでにユーザが参加表明中なら対象メンバーを抜く
+  if (joinned_game.filter(f => f.name === target_game_mode.name).length !== 0) {
+    embed.fields = embed.fields.map(f => {
+      if (f.name === target_game_mode.name) {
+        f.value = f.value.split('\n').filter(m => m !== user_mention(member.id)).join('\n')
+      }
+      if (f.value === '') return null
+      return f
+    }).filter(v => v)
+  } else {
+    // 対象ゲームがまだないなら作成
+    if (!embed.fields.map(f => f.name).includes(target_game_mode.name)) {
+      embed.fields.push({ name: target_game_mode.name, value: '' })
     }
-    return f
-  })
-
+    // 対象ゲームにメンバーを参加
+    embed.fields = embed.fields.map(f => {
+      if (f.name === target_game_mode.name) {
+        let mentions = f.value.split('\n')
+        mentions.push(user_mention(member.id))
+        f.value = mentions.join('\n')
+      }
+      return f
+    })
+  }
   return new MessageEmbed(embed)
 }
 
