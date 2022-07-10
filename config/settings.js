@@ -1,17 +1,18 @@
 const env_config = require(`./${process.env.ENV}`)
 
 module.exports = {
-  pnr2: {
-    game_mode_list: [
-      { custom_id: 'game_mode_sg2', name: 'SG', disabled: false },
-      { custom_id: 'game_mode_rt', name: 'RT', disabled: false },
-      { custom_id: 'game_mode_ps', name: 'PS', disabled: false },
-      { custom_id: 'game_mode_ppp', name: 'PPP', disabled: false },
-      { custom_id: 'game_mode_fc', name: 'FC', disabled: false },
-      { custom_id: 'game_mode_bj', name: 'BJ', disabled: false },
-      { custom_id: 'game_mode_ppr', name: 'PPR', disabled: false },
-      { custom_id: 'game_mode_sd', name: 'SD', disabled: false },
-    ]
+  myriad_race: {
+    buttons: [
+      { custom_id: 'myriad_race_sg2', name: 'SG', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_rt', name: 'RT', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_ps', name: 'PS', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_ppp', name: 'PPP', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_fc', name: 'FC', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_bj', name: 'BJ', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_ppr', name: 'PPR', style: 'PRIMARY', disabled: false },
+      { custom_id: 'myriad_race_sd', name: 'SD', style: 'PRIMARY', disabled: false },
+    ],
+    reset: { custom_id: 'myriad_race_reset', name: 'りせっと', style: 'DANGER', disabled: false }
   },
   env: env_config
 }
