@@ -17,7 +17,7 @@ const { updatePoll } = require('./services/poll_manager')
 client.on('messageCreate', async message => {
   if(message.author.bot) return
 
-  discord_notifer.sendLog(message)
+  discord_notifer.sendLog(message,  process.env.DISCORD_WEBHOOK_URL)
 })
 
 const commandFiles = fs
